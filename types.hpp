@@ -1,1 +1,3 @@
-typedef uint32 Word; 
+#include <stdint.h>
+
+typedef uint32_t Word; 
