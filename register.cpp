@@ -1,11 +1,11 @@
 #include "register.hpp"
 
-Word read() const
+Word Register::read() const
 	{
 	return value;
 	}
 
-void write(const Word value)
+void Register::write(const Word value)
 	{
-	this.value = value;
+	this->value = value;
 	}
