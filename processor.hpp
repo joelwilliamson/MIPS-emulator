@@ -25,6 +25,7 @@ public:
 
 	void exec();
 
+	// TODO: All registers should be passed by reference
 	// Operations
 	void j(const Word address);
 	void jal(const Word address);

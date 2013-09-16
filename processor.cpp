@@ -105,3 +105,111 @@ void Processor::exec()
 			}
 		}
 
+void Processor::j(const Word address)
+	{
+	programCounter = 4*address;
+	}
+
+void Processor::jal(const Word address)
+	{
+	// The instruction immediately following the jump should be
+	// executed before the jump, but I am diverging from the spec
+	// by ignoring it
+	registers.at(31).write(programCounter + 4);
+	programCounter = 4*address;
+	}
+
+void Processor::beq(const Register& rs, const Register& rt, const Word im)
+	{
+	if (rs.read() != rt.read()) return;
+	else programCounter += 4*im;
+	}
+
+void Processor::bne(const Register& rs, const Register& rt, const Word im)
+	{
+	if (rs.read() == rt.read()) programCounter += 4*im;
+	}
+
+void Processor::addi(const Register& rs, Register& rt, const Word im) const
+	{
+	rt.write(rs.read()+im);
+	}
+
+void Processor::addiu(const Register& rs, Register& rt, const Word im) const
+	{
+	// TODO: implement
+	throw 0;
+	}
+
+void Processor::slti(const Register& rs, Register &rt, const Word im) const
+	{
+	rt.write(rs.read()<im);
+	}
+
+void Processor::andi(const Register& rs, Register& rt, const Word im) const
+	{
+	rt.write(rs.read() & im);
+	}
+
+void Processor::ori(const Register& rs, Register& rt, const Word im) const
+	{
+	rt.write(rs.read() & im);
+	}
+
+void Processor::lui(const Register& rs, Register& rt, const Word im) const
+	{
+	rt.write(im << 16);
+	}
+
+void Processor::lb(const Register& rs, Register& rt, const Word im) const
+	{
+	// Get the appropriate word and select the appropriate byte
+	rt.write(this->getWord((rs.read()+im)/4)
+			<< 8*((rs.read()+im)%4));
+	}
+
+void Processor::lh(const Register& rs, Register& rt, const Word im) const
+	{
+	rt.write(this->getWord((rs.read()+im)/4)
+			<< 16*((rs.read()+im)%8));
+	}
+
+void Processor::lw(const Register& rs, Register& rt, const Word im) const
+	{
+	rt.write(this->getWord((rs.read()+im)/4));
+	}
+
+void Processor::lbu(const Register& rs, Register& rt, const Word im) const
+	{
+	// TODO: implement
+	throw 0;
+	}
+
+void Processor::lhu(const Register& rs, Register& rt, const Word im) const
+	{
+	// TODO: implement
+	throw 0;
+	}
+
+void Processor::sb(const Register& rs, const Register& rt, const Word im) const
+	{
+	// TODO: think about this, implement it correctly
+	throw 0;
+	Word addr = (rs.read()+im)/4;
+	Word oldValue = this->getWord(addr);
+	Word mask = 0xffffffff - (0xff << 3-(rs.read()+im)%4);
+	Word newValue = (rt.read()&0xff) << 3-(rs.read()+im)%4;
+	this->getWord(addr) = (oldValue&mask) + newValue;
+	}
+
+void Processor::sh(const Register& rs, const Register& rt, const Word im) const
+	{
+	throw 0;
+	}
+
+void Processor::sw(const Register& rs, const Register& rt, const Word im) const
+	{
+	this->getWord((rs.read()+im)/4) = rt.read();
+	}
+
+
