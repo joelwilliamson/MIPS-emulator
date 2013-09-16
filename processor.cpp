@@ -212,4 +212,101 @@ void Processor::sw(const Register& rs, const Register& rt, const Word im) const
 	this->getWord((rs.read()+im)/4) = rt.read();
 	}
 
+void Processor::sll(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	rd.write(rt.read() << sh);
+	}
 
+void Processor::srl(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	rd.write(rt.read() >> sh);
+	}
+
+void Prcoessor::sra(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	throw 0;
+	}
+
+void Processor::jr(const Register& rs, const Register& rt, Register& rd, const Word sh)
+	{
+	this->j(rs.read());
+	}
+
+void Processor::mfhi(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	rd.write(hi.read());
+	}
+
+void Processor::mflo(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	rd.write(lo.read());
+	}
+
+void Processor::mult(const Register& rs, const Register& rt, const Register& rd, const Word sh)
+	{
+	uint64_t product = rs.read()*rt.read();
+	lo.write(product()&0xffffffff);
+	hi.write(product() >> 32);
+	}
+
+void Processor::multu(const Register& rs, const Register& rt, const Register& rd, const Word sh)
+	{
+	throw 0;
+	}
+
+void Processor::div(const Register& rs, const Register& rt, const Register& rd, const Word sh)
+	{
+	lo.write(rs.read()/rt.read());
+	hi.write(rs.read()%rt.read());
+	}
+
+void Processor::divu(const Register& rs, const Register& rt, const Register& rd, const Word sh)
+	{
+	throw 0;
+	}
+
+void Processor::add(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	rd.write(rs.read()+rt.read());
+	}
+
+void Processor::addu(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	throw 0;
+	}
+
+void Processor::sub(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	rd.write(rs.read()-rt.read());
+	}
+
+void Processor::subu(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	throw 0;
+	}
+
+void Processor::andd(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	rd.write(rs.read() & rt.read());
+	}
+
+void Processor::orr(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	rd.write(rs.read() | rt.read());
+	}
+
+void Processor::xorr(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	rd.write(rs.read() ^ rt.read());
+	}
+
+void Processor::nor(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	// A nor B = not (A or B) = (not A) and (not B)
+	rd.write((rs.read()^0) & (rt.read()^0));
+	}
+
+void Processor::slt(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+	{
+	rd.write(rs.read()<rt.read());
+	}
