@@ -30,20 +30,20 @@ public:
 	void jal(const Word address);
 	void beq(const Register rs, const Register rt, const Word im);
 	void bne(const Register rs, const Register rt, const Word im);
-	void addi(Register rs, const Register rt, const Word im) const;
-	void addiu(Register rs, const Register rt, const Word im) const;
-	void slti(Register rs, const Register rt, const Word im) const;
-	void andi(Register rs, const Register rt, const Word im) const;
-	void ori(Register rs, const Register rt, const Word im) const;
-	void lui(Register rs, const Register rt, const Word im) const;
-	void lb(Register rs, const Register rt, const Word im) const;
-	void lh(Register rs, const Register rt, const Word im) const;
-	void lw(Register rs, const Register rt, const Word im) const;
-	void lbu(Register rs, const Register rt, const Word im) const;
-	void lhu(Register rs, const Register rt, const Word im) const;
-	void sb(Register rs, const Register rt, const Word im) const;
-	void sh(Register rs, const Register rt, const Word im) const;
-	void sw(Register rs, const Register rt, const Word im) const;
+	void addi(const Register rs, Register rt, const Word im) const;
+	void addiu(const Register rs, Register rt, const Word im) const;
+	void slti(const Register rs,  Register rt, const Word im) const;
+	void andi(const Register rs,  Register rt, const Word im) const;
+	void ori(const Register rs,  Register rt, const Word im) const;
+	void lui(const Register rs,  Register rt, const Word im) const;
+	void lb(const Register rs,  Register rt, const Word im) const;
+	void lh(const Register rs,  Register rt, const Word im) const;
+	void lw(const Register rs,  Register rt, const Word im) const;
+	void lbu(const Register rs,  Register rt, const Word im) const;
+	void lhu(const Register rs, Register rt, const Word im) const;
+	void sb(const Register rs, const Register rt, const Word im);
+	void sh(const Register rs, const Register rt, const Word im);
+	void sw(const Register rs, const Register rt, const Word im);
 
 	// Functions
 	void sll(const Register rs, const Register rt, Register rd, const Word sh) const;
