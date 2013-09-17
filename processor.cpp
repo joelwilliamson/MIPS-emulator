@@ -11,14 +11,14 @@ Processor::Processor(int startingAddress, const std::vector <Word>& initialMemor
 	std::copy(initialMemory.begin(),initialMemory.end(),mainMemory.begin());
 	}
 
-Register& Processor::getRegister(const int regNumber) const
+Register& Processor::getRegister(const int regNumber)
 	{
-	return registers.at(regNumber);
+	return registers[regNumber];
 	}
 
-Word& Processor::getWord(const Word address) const
+Word& Processor::getWord(const Word address)
 	{
-	return mainMemory.at(address);
+	return mainMemory[address];
 	}
 
 Word Processor::getProgramCounter() const
@@ -36,7 +36,7 @@ void Processor::exec()
 	// This is roughly the I stage
 	Word instruction = this->getWord(programCounter);
 	programCounter += 4;
-	char opcode = instruction >> 32-6; // This should get the upper six bits of the instruction
+	char opcode = instruction >> (32-6); // This should get the upper six bits of the instruction
 	char funct = instruction & 0x3f; // Get the lower 6 bits in case this is a R format
 	
 	Register rs = this->getRegister(0x03f80000 & instruction); 
@@ -104,6 +104,7 @@ void Processor::exec()
 			case 42: this->slt(rs,rt,rd,sh); break;
 			}
 		}
+	}
 
 void Processor::j(const Word address)
 	{
@@ -161,53 +162,53 @@ void Processor::lui(const Register& rs, Register& rt, const Word im) const
 	rt.write(im << 16);
 	}
 
-void Processor::lb(const Register& rs, Register& rt, const Word im) const
+void Processor::lb(const Register& rs, Register& rt, const Word im) 
 	{
 	// Get the appropriate word and select the appropriate byte
 	rt.write(this->getWord((rs.read()+im)/4)
 			<< 8*((rs.read()+im)%4));
 	}
 
-void Processor::lh(const Register& rs, Register& rt, const Word im) const
+void Processor::lh(const Register& rs, Register& rt, const Word im)
 	{
 	rt.write(this->getWord((rs.read()+im)/4)
 			<< 16*((rs.read()+im)%8));
 	}
 
-void Processor::lw(const Register& rs, Register& rt, const Word im) const
+void Processor::lw(const Register& rs, Register& rt, const Word im)
 	{
 	rt.write(this->getWord((rs.read()+im)/4));
 	}
 
-void Processor::lbu(const Register& rs, Register& rt, const Word im) const
+void Processor::lbu(const Register& rs, Register& rt, const Word im)
 	{
 	// TODO: implement
 	throw 0;
 	}
 
-void Processor::lhu(const Register& rs, Register& rt, const Word im) const
+void Processor::lhu(const Register& rs, Register& rt, const Word im)
 	{
 	// TODO: implement
 	throw 0;
 	}
 
-void Processor::sb(const Register& rs, const Register& rt, const Word im) const
+void Processor::sb(const Register& rs, const Register& rt, const Word im)
 	{
 	// TODO: think about this, implement it correctly
 	throw 0;
 	Word addr = (rs.read()+im)/4;
 	Word oldValue = this->getWord(addr);
-	Word mask = 0xffffffff - (0xff << 3-(rs.read()+im)%4);
-	Word newValue = (rt.read()&0xff) << 3-(rs.read()+im)%4;
+	Word mask = 0xffffffff - (0xff << (3-(rs.read()+im)%4));
+	Word newValue = (rt.read()&0xff) << (3-(rs.read()+im)%4);
 	this->getWord(addr) = (oldValue&mask) + newValue;
 	}
 
-void Processor::sh(const Register& rs, const Register& rt, const Word im) const
+void Processor::sh(const Register& rs, const Register& rt, const Word im)
 	{
 	throw 0;
 	}
 
-void Processor::sw(const Register& rs, const Register& rt, const Word im) const
+void Processor::sw(const Register& rs, const Register& rt, const Word im)
 	{
 	this->getWord((rs.read()+im)/4) = rt.read();
 	}
@@ -222,12 +223,12 @@ void Processor::srl(const Register& rs, const Register& rt, Register& rd, const 
 	rd.write(rt.read() >> sh);
 	}
 
-void Prcoessor::sra(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+void Processor::sra(const Register& rs, const Register& rt, Register& rd, const Word sh) const
 	{
 	throw 0;
 	}
 
-void Processor::jr(const Register& rs, const Register& rt, Register& rd, const Word sh)
+void Processor::jr(const Register& rs, const Register& rt, const Register& rd, const Word sh)
 	{
 	this->j(rs.read());
 	}
@@ -245,8 +246,8 @@ void Processor::mflo(const Register& rs, const Register& rt, Register& rd, const
 void Processor::mult(const Register& rs, const Register& rt, const Register& rd, const Word sh)
 	{
 	uint64_t product = rs.read()*rt.read();
-	lo.write(product()&0xffffffff);
-	hi.write(product() >> 32);
+	lo.write(product&0xffffffff);
+	hi.write(product >> 32);
 	}
 
 void Processor::multu(const Register& rs, const Register& rt, const Register& rd, const Word sh)

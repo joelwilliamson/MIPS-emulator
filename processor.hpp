@@ -1,3 +1,4 @@
+#pragma once
 #include "register.hpp"
 #include "types.hpp"
 
@@ -9,23 +10,22 @@
 class Processor
 	{
 
+	Word programCounter;
 	std::vector <Register> registers; // The first register should be a zero-register
 	std::vector <Word> mainMemory; // This should be larger, but will require a clever datastructure
-	Word programCounter;
 
 	Register hi,lo; // Registers for storing the results of certain operations
 
 public:
 	Processor(int startingAddress, const std::vector <Word>& initialMemory);
 
-	Register& getRegister(const int regNumber) const;
-	Word& getWord(const Word address) const;
+	Register& getRegister(const int regNumber); 
+	Word& getWord(const Word address);
 	Word getProgramCounter() const;
 	void changeProgramCounter(const int change);
 
 	void exec();
 
-	// TODO: All registers should be passed by reference
 	// Operations
 	void j(const Word address);
 	void jal(const Word address);
@@ -37,11 +37,11 @@ public:
 	void andi(const Register& rs,  Register& rt, const Word im) const;
 	void ori(const Register& rs,  Register& rt, const Word im) const;
 	void lui(const Register& rs,  Register& rt, const Word im) const;
-	void lb(const Register& rs,  Register& rt, const Word im) const;
-	void lh(const Register& rs,  Register& rt, const Word im) const;
-	void lw(const Register& rs,  Register& rt, const Word im) const;
-	void lbu(const Register& rs,  Register& rt, const Word im) const;
-	void lhu(const Register& rs, Register& rt, const Word im) const;
+	void lb(const Register& rs,  Register& rt, const Word im);
+	void lh(const Register& rs,  Register& rt, const Word im);
+	void lw(const Register& rs,  Register& rt, const Word im);
+	void lbu(const Register& rs,  Register& rt, const Word im);
+	void lhu(const Register& rs, Register& rt, const Word im);
 	void sb(const Register& rs, const Register& rt, const Word im);
 	void sh(const Register& rs, const Register& rt, const Word im);
 	void sw(const Register& rs, const Register& rt, const Word im);
