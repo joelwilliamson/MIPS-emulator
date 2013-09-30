@@ -17,13 +17,20 @@
 		 0x00000000};
 		 */
 
-Word program[] = {0x200200ff, // addi $2,$0,0x00ff
-		0x20420fff, // addi $2,$2,0x0fff
-		0x00000000};
 
 int main()
 	{
-	std::vector <Word> progVector(program,program+(sizeof(program)/sizeof(program[0])));
+	std::vector <Word> progVector;
+	std::cout << "Please enter the hex-coded instructions for the program,"
+	" separated by whitespace, with a ^D to end." << std::endl;
+	std::cin.unsetf(std::ios_base::dec);
+	std::cin.setf(std::ios_base::hex);
+	Word nextInstruction;
+	while (std::cin >> nextInstruction)
+		{
+		progVector.push_back(nextInstruction);
+		}
+
 	std::cerr.setf(std::ios_base::hex,std::ios_base::hex | std::ios_base::dec);
 	for (auto elem : progVector)
 		std::cerr << elem << std::endl;
