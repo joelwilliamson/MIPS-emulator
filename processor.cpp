@@ -1,4 +1,7 @@
 #include "processor.hpp"
+#include "types.hpp"
+
+#include <iostream>
 
 #include <algorithm>
 
@@ -7,18 +10,17 @@ Processor::Processor(int startingAddress, const std::vector <Word>& initialMemor
 	registers(32),
 	mainMemory(2000)
 	{
-	registers.at(0).write(0); // Zero out the first register
 	std::copy(initialMemory.begin(),initialMemory.end(),mainMemory.begin());
 	}
 
-Register& Processor::getRegister(const int regNumber)
+Register& Processor::getRegister(const Word regNumber)
 	{
-	return registers[regNumber];
+	return registers.at(regNumber);
 	}
 
 Word& Processor::getWord(const Word address)
 	{
-	return mainMemory[address];
+	return mainMemory.at(address);
 	}
 
 Word Processor::getProgramCounter() const
@@ -35,22 +37,37 @@ void Processor::exec()
 	{
 	// This is roughly the I stage
 	Word instruction = this->getWord(programCounter);
-	programCounter += 4;
+	std::cerr << std::endl;
+	std::cerr << "Got instruction: " << instruction;
+	std::cerr << " @ " << programCounter << std::endl;
+	programCounter += 1;
 	char opcode = instruction >> (32-6); // This should get the upper six bits of the instruction
+	std::cerr << "The opcode is: " << Word(opcode) << std::endl;
 	char funct = instruction & 0x3f; // Get the lower 6 bits in case this is a R format
 	
-	Register rs = this->getRegister(0x03f80000 & instruction); 
-	Register rt = this->getRegister(0x001f0000 & instruction);
-	char im = 0x0000ffff & instruction;
-	Register rd = this->getRegister(0x0000fc00 & instruction);
+	Word rsMask = 0x03e00000;
+	Word rtMask = 0x001f0000;
+	Word rsNumber = (rsMask & instruction) >> 21;
+	Word rtNumber = (rtMask & instruction) >> 16;
+	std::cerr << "(rs,rt): " << rsNumber << "," << rtNumber << std::endl;
+	Register& rs = this->getRegister(rsNumber); 
+	Register& rt = this->getRegister(rtNumber);
+	Word im = 0x0000ffff & instruction;
+	std::cerr.setf(std::ios_base::dec, std::ios_base::dec | std::ios_base::hex);
+	std::cerr << "Using " << im << " as immediate (maybe " << toSigned(im) << ")." << std::endl;
+	std::cerr.setf(std::ios_base::hex,std::ios_base::dec | std::ios_base::hex);
+	
+	// If opcode is set, we are in I/J format and don't need an rd register
+	std::cerr << "Maybe using rd: " << ((0x0000f800 & instruction) >> 11) << std::endl;
+	Register& rd = opcode?this->getRegister(0):this->getRegister((0x0000f800 & instruction) >> 11);
 	char sh = 0x000003c0 & instruction;
 
 	// E stage
 	switch (opcode)
 		{
 		case 0 : break;
-		case 2 : this->j(instruction|0x03ffffff); break;
-		case 3 : this->jal(instruction|0x03ffffff); break;
+		case 2 : this->j(instruction & 0x03ffffff); break;
+		case 3 : this->jal(instruction & 0x03ffffff); break;
 		case 4 : this->beq(rs,rt,im); break;
 		case 5 : this->bne(rs,rt,im); break;
 		case 6 : case 7 : break; // Not specified
@@ -108,7 +125,8 @@ void Processor::exec()
 
 void Processor::j(const Word address)
 	{
-	programCounter = 4*address;
+	std::cerr << "Jumping to address: " << address << std::endl;
+	programCounter = address;
 	}
 
 void Processor::jal(const Word address)
@@ -123,12 +141,17 @@ void Processor::jal(const Word address)
 void Processor::beq(const Register& rs, const Register& rt, const Word im)
 	{
 	if (rs.read() != rt.read()) return;
-	else programCounter += 4*im;
+	else programCounter += toSigned(im);
 	}
 
 void Processor::bne(const Register& rs, const Register& rt, const Word im)
 	{
-	if (rs.read() == rt.read()) programCounter += 4*im;
+	std::cerr << "bne " << rs.read() << "," << rt.read() << "," << toSigned(im) << std::endl;
+	if (rs.read() != rt.read())
+		{
+		programCounter += toSigned(im);
+		std::cerr << "Branched to " << programCounter << std::endl;
+		}
 	}
 
 void Processor::addi(const Register& rs, Register& rt, const Word im) const

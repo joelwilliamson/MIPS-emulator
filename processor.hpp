@@ -19,7 +19,7 @@ class Processor
 public:
 	Processor(int startingAddress, const std::vector <Word>& initialMemory);
 
-	Register& getRegister(const int regNumber); 
+	Register& getRegister(const Word regNumber); 
 	Word& getWord(const Word address);
 	Word getProgramCounter() const;
 	void changeProgramCounter(const int change);
