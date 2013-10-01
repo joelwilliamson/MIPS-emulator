@@ -5,10 +5,10 @@
 #uses the g++ compiler
 CXX = g++
 #turns on warn-all and explicit dependency tracking
-CXXFLAGS += -Wall -MMD -ggdb
+CXXFLAGS += -Wall -MMD -ggdb -std=c++11
 EXEC = main
 #replaces all occurrences of .o at the end of a name with .d
-OBJECTS = register.o processor.o main.o
+OBJECTS = register.o processor.o main.o types.o
 DEPENDS = ${OBJECTS:.o=.d}
 
 #creates file dependencies in make syntax
