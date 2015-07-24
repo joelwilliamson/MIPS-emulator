@@ -5,7 +5,7 @@
 #uses the g++ compiler
 CXX = g++
 #turns on warn-all and explicit dependency tracking
-CXXFLAGS += -Wall -MMD -ggdb -std=c++11
+CXXFLAGS += -Wall -MMD -ggdb -std=c++14
 EXEC = main
 #replaces all occurrences of .o at the end of a name with .d
 OBJECTS = register.o processor.o main.o types.o
