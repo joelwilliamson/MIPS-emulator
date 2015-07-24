@@ -7,6 +7,16 @@
 
 
 
+/* The Processor class represents the state of a non-pipelined MIPS processor.
+ * At any given instant, it has a program counter indicating which instruction
+ * to execute next, a bank of 32 registers (each 32-bits wide) of easily
+ * accessible storage, and an arbitrarily sized main memory.
+ *
+ * Most interaction with the processor should go through the "Operation" and
+ * "Function" methods, which represent opcodes. To simulate a full run on a
+ * program in memory, the `exec()` function will start execution at an address
+ * specfied at construction time, and use real program flow.
+ */
 class Processor
 	{
 
