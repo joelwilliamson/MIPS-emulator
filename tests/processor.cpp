@@ -20,5 +20,8 @@ BOOST_AUTO_TEST_CASE( processor_test ) {
   // r2 >> sh
   proc.srl(r1,r2,r3,1);
   BOOST_CHECK( r3.read() == 3 );
-
+  // srl handles negative values correctly (non-sign preserving)
+  r2 = 0xffffffff;
+  proc.srl(r1,r2,r3,4);
+  BOOST_CHECK( r3.read() == 0x0fffffff );
 }
