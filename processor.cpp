@@ -297,10 +297,13 @@ void Processor::multu(const Register& rs, const Register& rt, const Register& rd
 }
 
 void Processor::div(const Register& rs, const Register& rt, const Register& rd, const Word sh)
-	{
-	lo.write(rs.read()/rt.read());
-	hi.write(rs.read()%rt.read());
-	}
+{
+  // As with multiplication, we need to convert to a signed representation.
+  // We don't need to extend, because division is a narrowing operation.
+  int32_t ss = rs.read(), st = rt.read();
+  lo.write(ss/st);
+  hi.write(ss%st);
+}
 
 void Processor::divu(const Register& rs, const Register& rt, const Register& rd, const Word sh)
 	{

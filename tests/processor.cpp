@@ -61,4 +61,19 @@ BOOST_AUTO_TEST_CASE( processor_test ) {
   BOOST_CHECK( r3.read() == 4294388366 );
   proc.mfhi( r1, r2, r3, 0);
   BOOST_CHECK( r3.read() == 2147541535 );
+
+  // Divide signed
+  r1 = 137;
+  r2 = 30;
+  proc.div( r1, r2, r3, 0);
+  proc.mflo( r1, r2, r3, 0);
+  BOOST_CHECK( r3.read() == 137/30 );
+  proc.mfhi(r1, r2, r3, 0);
+  BOOST_CHECK( r3.read() == 137%30 );
+  r2 = -40;
+  proc.div( r1, r2, r3, 0);
+  proc.mflo( r1, r2, r3, 0);
+  BOOST_CHECK( r3.read() == Word(137/-40) );
+  proc.mfhi( r1, r2, r3, 0);
+  BOOST_CHECK( r3.read() == Word(137%-40) );
 }
