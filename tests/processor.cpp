@@ -37,4 +37,19 @@ BOOST_AUTO_TEST_CASE( processor_test ) {
   r1 = 0xdeadbeef;
   proc.jr(r1,r2,r3,0);
   BOOST_CHECK( proc.getProgramCounter() == 0xdeadbeef );
+
+  // multiply signed
+  r1 = 5784;
+  r2 = 9865;
+  proc.mult( r1, r2, r3, 0);
+  proc.mflo( r1, r2, r3, 0);
+  BOOST_CHECK( r3.read() == 5784 * 9865 );
+
+  r1 = -435;
+  r2 = 928;
+  proc.mult( r1, r2, r3, 0);
+  proc.mflo( r1, r2, r3, 0);
+  BOOST_CHECK( r3.read() == Word(-435 * 928) );
+  proc.mfhi( r1, r2, r3, 0);
+  BOOST_CHECK( r3.read() == 0xffffffff);
 }

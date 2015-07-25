@@ -276,11 +276,16 @@ void Processor::mflo(const Register& rs, const Register& rt, Register& rd, const
 	}
 
 void Processor::mult(const Register& rs, const Register& rt, const Register& rd, const Word sh)
-	{
-	uint64_t product = rs.read()*rt.read();
-	lo.write(product&0xffffffff);
-	hi.write(product >> 32);
-	}
+{
+  // To force signed multiplication, and avoid overflowing, both operands
+  // should be signed 64-bit values. They need to be first converted to a signed
+  // type then widened, as this will guarantee
+  int64_t xs = int32_t(rs.read());
+  int64_t xt = int32_t(rt.read());
+  int64_t product = xs * xt;
+  lo.write(product&0xffffffff);
+  hi.write(product >> 32);
+}
 
 void Processor::multu(const Register& rs, const Register& rt, const Register& rd, const Word sh)
 	{
