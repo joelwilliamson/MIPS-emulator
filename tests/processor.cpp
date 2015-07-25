@@ -32,4 +32,9 @@ BOOST_AUTO_TEST_CASE( processor_test ) {
   r2 = 0xffffff00;
   proc.sra(r1,r2,r3,4);
   BOOST_CHECK( r3.read() == 0xfffffff0 );
+
+  // jump to register
+  r1 = 0xdeadbeef;
+  proc.jr(r1,r2,r3,0);
+  BOOST_CHECK( proc.getProgramCounter() == 0xdeadbeef );
 }
