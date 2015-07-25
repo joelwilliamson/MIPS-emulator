@@ -24,4 +24,12 @@ BOOST_AUTO_TEST_CASE( processor_test ) {
   r2 = 0xffffffff;
   proc.srl(r1,r2,r3,4);
   BOOST_CHECK( r3.read() == 0x0fffffff );
+
+  // sra
+  r2 = 0x0fffffff;
+  proc.sra(r1,r2,r3,4);
+  BOOST_CHECK( r3.read() == 0x00ffffff );
+  r2 = 0xffffff00;
+  proc.sra(r1,r2,r3,4);
+  BOOST_CHECK( r3.read() == 0xfffffff0 );
 }

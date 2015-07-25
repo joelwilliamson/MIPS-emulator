@@ -243,12 +243,21 @@ void Processor::sll(const Register& rs, const Register& rt, Register& rd, const 
 
 void Processor::srl(const Register& rs, const Register& rt, Register& rd, const Word sh) const
 	{
-	rd.write(rt.read() >> sh);
+          // GCC uses a logical shift for unsigned types.
+          // https://gcc.gnu.org/ml/gcc/2000-04/msg00152.html
+          rd.write(rt.read() >> sh);
 	}
 
 void Processor::sra(const Register& rs, const Register& rt, Register& rd, const Word sh) const
 	{
-	throw 0;
+          // An arithmetic right shift is equivalent to a logical right shift if
+          // the source is positive, and is a right shift plus sign extension if
+          // negative. To sign extend, we create a mask with sh bits set, then
+          // shift them into position.
+          const Word mask = ((1 << (8*sizeof(Word) - 1)) & rt.read()) ? // Check sign bit
+            ((1<<sh) - 1) << (8*sizeof(Word) - sh) // Use mask
+            : 0; // Ignore mask
+          rd.write( rt.read() >> sh | mask);
 	}
 
 void Processor::jr(const Register& rs, const Register& rt, const Register& rd, const Word sh)
