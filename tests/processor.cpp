@@ -52,4 +52,13 @@ BOOST_AUTO_TEST_CASE( processor_test ) {
   BOOST_CHECK( r3.read() == Word(-435 * 928) );
   proc.mfhi( r1, r2, r3, 0);
   BOOST_CHECK( r3.read() == 0xffffffff);
+
+  // Multiply unsigned
+  r1 = 4294967286;
+  r2 = 2147541541;
+  proc.multu( r1, r2, r3, 0);
+  proc.mflo( r1, r2, r3, 0);
+  BOOST_CHECK( r3.read() == 4294388366 );
+  proc.mfhi( r1, r2, r3, 0);
+  BOOST_CHECK( r3.read() == 2147541535 );
 }

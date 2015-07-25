@@ -288,9 +288,13 @@ void Processor::mult(const Register& rs, const Register& rt, const Register& rd,
 }
 
 void Processor::multu(const Register& rs, const Register& rt, const Register& rd, const Word sh)
-	{
-	throw 0;
-	}
+{
+  uint64_t xs = rs.read(), xt = rt.read(); // This will do an unsigned extension,
+  // filling the new bits with zeros
+  uint64_t product = xs * xt;
+  lo.write(product & 0xffffffff);
+  hi.write(product >> 32);
+}
 
 void Processor::div(const Register& rs, const Register& rt, const Register& rd, const Word sh)
 	{
