@@ -306,9 +306,10 @@ void Processor::div(const Register& rs, const Register& rt, const Register& rd, 
 }
 
 void Processor::divu(const Register& rs, const Register& rt, const Register& rd, const Word sh)
-	{
-	throw 0;
-	}
+{
+  lo.write(rs.read()/rt.read());
+  hi.write(rs.read()%rt.read());
+}
 
 void Processor::add(const Register& rs, const Register& rt, Register& rd, const Word sh) const
 	{

@@ -76,4 +76,13 @@ BOOST_AUTO_TEST_CASE( processor_test ) {
   BOOST_CHECK( r3.read() == Word(137/-40) );
   proc.mfhi( r1, r2, r3, 0);
   BOOST_CHECK( r3.read() == Word(137%-40) );
+
+  // Divide unsigned
+  r1 = 2147483705; // 2^31 + 57;
+  r2 = 32;
+  proc.divu( r1, r2, r3, 0 );
+  proc.mflo(r1, r2, r3, 0);
+  BOOST_CHECK( r3.read() == 67108865 ); //2^26 + 1
+  proc.mfhi( r1, r2, r3, 0 );
+  BOOST_CHECK( r3.read() == 25 );
 }
