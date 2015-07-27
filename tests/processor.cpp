@@ -2,9 +2,10 @@
 #include <boost/test/included/unit_test.hpp>
 
 #include "../processor.hpp"
+#include "../processor_extensions.hpp"
 
 BOOST_AUTO_TEST_CASE( processor_test ) {
-  Processor proc(0,{});
+  simple_io<Processor> proc(0,{});
   Register& r1 = proc.getRegister(1);
   Register& r2 = proc.getRegister(2);
   Register& r3 = proc.getRegister(3);
@@ -91,4 +92,7 @@ BOOST_AUTO_TEST_CASE( processor_test ) {
   r2 = -1928;
   proc.add( r1, r2, r3, 0);
   BOOST_CHECK( r3.read() == 9182 - 1928 );
+
+  r1 = 1234321;
+  proc.dump_reg(r1);
 }
