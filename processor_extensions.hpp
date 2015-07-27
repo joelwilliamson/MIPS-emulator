@@ -12,5 +12,5 @@ public:
 template<typename BaseProcessor>
 void simple_io<BaseProcessor>::dump_reg(const Register& rs) const
 {
-  std::cout << rs.read();
+  std::cout << rs.read() << std::endl;
 }
