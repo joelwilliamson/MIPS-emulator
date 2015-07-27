@@ -5,7 +5,7 @@
 #include "../processor_extensions.hpp"
 
 BOOST_AUTO_TEST_CASE( processor_test ) {
-  simple_io<Processor> proc(0,{});
+  simple_io<Processor> proc(0,{0,1,2,3,4,5,6,7,8,10});
   Register& r1 = proc.getRegister(1);
   Register& r2 = proc.getRegister(2);
   Register& r3 = proc.getRegister(3);
@@ -95,4 +95,15 @@ BOOST_AUTO_TEST_CASE( processor_test ) {
 
   r1 = 1234321;
   proc.dump_reg(r1);
+
+  // Check that data is preserved on a store-load round trip
+  r1 = 1234321;
+  r2 = 0x34ff50;
+  proc.sw(r2,r1,0);
+  proc.lw(r2,r3,0);
+  BOOST_CHECK( r3.read() == 1234321 );
+  // Check that processor initialization worked correctly
+  r2 = 4 * sizeof(Word);
+  proc.lw( r2, r1, 0);
+  BOOST_CHECK( r1.read() == 4 );
 }

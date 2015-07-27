@@ -4,6 +4,7 @@
 
 
 #include <vector>
+#include <unordered_map>
 
 /* The Processor class represents the state of a non-pipelined MIPS processor.
  * At any given instant, it has a program counter indicating which instruction
@@ -30,7 +31,8 @@ class Processor
 
   Word programCounter;
   std::vector <Register> registers; // The first register should be a zero-register
-  std::vector <Word> mainMemory; // This should be larger, but will require a clever datastructure
+  std::unordered_map<Word,std::array <Word, 256> > main_memory; // The main memory is
+  // composed of 1 KB pages
 
   Register hi,lo; // Registers for storing the results of certain operations
 public:
@@ -55,14 +57,16 @@ public:
 	void andi(const Register& rs,  Register& rt, const Word im) const;
 	void ori(const Register& rs,  Register& rt, const Word im) const;
 	void lui(const Register& rs,  Register& rt, const Word im) const;
-	void lb(const Register& rs,  Register& rt, const Word im);
-	void lh(const Register& rs,  Register& rt, const Word im);
-	void lw(const Register& rs,  Register& rt, const Word im);
-	void lbu(const Register& rs,  Register& rt, const Word im);
-	void lhu(const Register& rs, Register& rt, const Word im);
-	void sb(const Register& rs, const Register& rt, const Word im);
-	void sh(const Register& rs, const Register& rt, const Word im);
-	void sw(const Register& rs, const Register& rt, const Word im);
+  // rs = rt[im]
+  void lb(const Register& rs,  Register& rt, const Word im);
+  void lh(const Register& rs,  Register& rt, const Word im);
+  void lw(const Register& rs,  Register& rt, const Word im);
+  void lbu(const Register& rs,  Register& rt, const Word im);
+  void lhu(const Register& rs, Register& rt, const Word im);
+  // rt[im] = rs, word addressed
+  void sb(const Register& rs, const Register& rt, const Word im);
+  void sh(const Register& rs, const Register& rt, const Word im);
+  void sw(const Register& rs, const Register& rt, const Word im);
 
 	// Functions
 	void sll(const Register& rs, const Register& rt, Register& rd, const Word sh) const;

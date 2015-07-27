@@ -5,13 +5,26 @@
 
 #include <algorithm>
 
+using namespace std;
+
+// Calculate the page number an address will be found on
+Word page(Word address) { return address >> 10; }
+// Calculate how many words into a page the address will be found
+Word word(Word address) { return (address >> 2) & 0xff; }
+
 Processor::Processor(int startingAddress, const std::vector <Word>& initialMemory)
-	: programCounter(startingAddress),
-	registers(32),
-	mainMemory(2000)
-	{
-	std::copy(initialMemory.begin(),initialMemory.end(),mainMemory.begin());
-	}
+  : programCounter(startingAddress),
+    registers(32)
+{
+  array<Word, 256> empty_memory = {};
+  empty_memory.fill(0);
+  for (unsigned int page = 0; page <= initialMemory.size()/256; page++) {
+    main_memory.emplace(std::make_pair(page,empty_memory));
+    for (int word = 0; word < 256 && page*256+word < initialMemory.size(); word++) {
+      main_memory[page][word] = initialMemory[word];
+    }
+  }
+}
 
 Register& Processor::getRegister(const Word regNumber)
 	{
@@ -19,9 +32,14 @@ Register& Processor::getRegister(const Word regNumber)
 	}
 
 Word& Processor::getWord(const Word address)
-	{
-	return mainMemory.at(address);
-	}
+{
+  Word page_num = page(address);
+  if (main_memory.count(page_num) == 0) { // No such page
+    main_memory[page_num].fill(0); // New empty page
+  }
+  return main_memory[page_num][word(address)];
+}
+
 
 Word Processor::getProgramCounter() const
 	{
@@ -186,22 +204,20 @@ void Processor::lui(const Register& rs, Register& rt, const Word im) const
 	}
 
 void Processor::lb(const Register& rs, Register& rt, const Word im) 
-	{
-	// Get the appropriate word and select the appropriate byte
-	rt.write(this->getWord((rs.read()+im)/4)
-			<< 8*((rs.read()+im)%4));
-	}
+{
+  // Get the appropriate word and select the appropriate byte
+  rt.write(this->getWord(rs.read()+im) << 8*((rs.read()+im)%4));
+}
 
 void Processor::lh(const Register& rs, Register& rt, const Word im)
-	{
-	rt.write(this->getWord((rs.read()+im)/4)
-			<< 16*((rs.read()+im)%8));
-	}
+{
+  rt.write(this->getWord(rs.read()+im) << 16*((rs.read()+im)%8));
+}
 
 void Processor::lw(const Register& rs, Register& rt, const Word im)
-	{
-	rt.write(this->getWord((rs.read()+im)/4));
-	}
+{
+  rt.write(this->getWord(rs.read()+im));
+}
 
 void Processor::lbu(const Register& rs, Register& rt, const Word im)
 	{
@@ -219,7 +235,7 @@ void Processor::sb(const Register& rs, const Register& rt, const Word im)
 	{
 	// TODO: think about this, implement it correctly
 	throw 0;
-	Word addr = (rs.read()+im)/4;
+	Word addr = rs.read()+im;
 	Word oldValue = this->getWord(addr);
 	Word mask = 0xffffffff - (0xff << (3-(rs.read()+im)%4));
 	Word newValue = (rt.read()&0xff) << (3-(rs.read()+im)%4);
@@ -233,7 +249,7 @@ void Processor::sh(const Register& rs, const Register& rt, const Word im)
 
 void Processor::sw(const Register& rs, const Register& rt, const Word im)
 	{
-	this->getWord((rs.read()+im)/4) = rt.read();
+	this->getWord(rs.read()+im) = rt.read();
 	}
 
 void Processor::sll(const Register& rs, const Register& rt, Register& rd, const Word sh) const
