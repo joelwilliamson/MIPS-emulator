@@ -85,4 +85,10 @@ BOOST_AUTO_TEST_CASE( processor_test ) {
   BOOST_CHECK( r3.read() == 67108865 ); //2^26 + 1
   proc.mfhi( r1, r2, r3, 0 );
   BOOST_CHECK( r3.read() == 25 );
+
+  // Add signed
+  r1 = 9182;
+  r2 = -1928;
+  proc.add( r1, r2, r3, 0);
+  BOOST_CHECK( r3.read() == 9182 - 1928 );
 }

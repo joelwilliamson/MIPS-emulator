@@ -312,9 +312,10 @@ void Processor::divu(const Register& rs, const Register& rt, const Register& rd,
 }
 
 void Processor::add(const Register& rs, const Register& rt, Register& rd, const Word sh) const
-	{
-	rd.write(rs.read()+rt.read());
-	}
+{
+  int32_t ss = rs.read(), st = rt.read();
+  rd = ss + st;
+}
 
 void Processor::addu(const Register& rs, const Register& rt, Register& rd, const Word sh) const
 	{
