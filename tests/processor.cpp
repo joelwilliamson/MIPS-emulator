@@ -5,7 +5,8 @@
 #include "../processor_extensions.hpp"
 
 BOOST_AUTO_TEST_CASE( processor_test ) {
-  simple_io<Processor> proc(0,{0,1,2,3,4,5,6,7,8,10});
+  trapped_overflow<Processor> overflow_proc(0,{0,2,4,6,8,10,12,14,16,18});
+  trapped_overflow<simple_io<Processor> > proc(0,{0,1,2,3,4,5,6,7,8,9});
   Register& r1 = proc.getRegister(1);
   Register& r2 = proc.getRegister(2);
   Register& r3 = proc.getRegister(3);
@@ -91,6 +92,17 @@ BOOST_AUTO_TEST_CASE( processor_test ) {
   r1 = 9182;
   r2 = -1928;
   proc.add( r1, r2, r3, 0);
+  BOOST_CHECK( r3.read() == 9182 - 1928 );
+  r1 = 2000000000;
+  r2 = 2000000000;
+  proc.add( r1, r2, r3, 0);
+  BOOST_CHECK( proc.trap() == true && proc.trap_location() == proc.getProgramCounter() );
+  proc.clear_trap();
+
+  // Add unsigned
+  r1 = 9182;
+  r2 = -1928;
+  proc.addu( r1, r2, r3, 0);
   BOOST_CHECK( r3.read() == 9182 - 1928 );
 
   r1 = 1234321;

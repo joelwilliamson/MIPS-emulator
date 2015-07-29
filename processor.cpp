@@ -172,15 +172,14 @@ void Processor::bne(const Register& rs, const Register& rt, const Word im)
 		}
 	}
 
-void Processor::addi(const Register& rs, Register& rt, const Word im) const
+void Processor::addi(const Register& rs, Register& rt, Word im)
 	{
 	rt.write(rs.read()+im);
 	}
 
 void Processor::addiu(const Register& rs, Register& rt, const Word im) const
 	{
-	// TODO: implement
-	throw 0;
+	rt.write(rs.read()+im);
 	}
 
 void Processor::slti(const Register& rs, Register &rt, const Word im) const
@@ -327,23 +326,24 @@ void Processor::divu(const Register& rs, const Register& rt, const Register& rd,
   hi.write(rs.read()%rt.read());
 }
 
-void Processor::add(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+void Processor::add(const Register& rs, const Register& rt, Register& rd, Word sh)
 {
   int32_t ss = rs.read(), st = rt.read();
-  rd = ss + st;
+  int32_t sum = ss + st;
+  rd = sum;
 }
 
 void Processor::addu(const Register& rs, const Register& rt, Register& rd, const Word sh) const
-	{
-	throw 0;
-	}
+{
+  rd.write(rs.read() + rt.read());
+}
 
-void Processor::sub(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+void Processor::sub(const Register& rs, const Register& rt, Register& rd, const Word sh)
 	{
 	rd.write(rs.read()-rt.read());
 	}
 
-void Processor::subu(const Register& rs, const Register& rt, Register& rd, const Word sh) const
+void Processor::subu(const Register& rs, const Register& rt, Register& rd, Word sh) const
 	{
 	throw 0;
 	}

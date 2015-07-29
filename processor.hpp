@@ -51,7 +51,7 @@ public:
 	void jal(const Word address);
 	void beq(const Register& rs, const Register& rt, const Word im);
 	void bne(const Register& rs, const Register& rt, const Word im);
-	void addi(const Register& rs, Register& rt, const Word im) const;
+	virtual void addi(const Register& rs, Register& rt, Word im);
 	void addiu(const Register& rs, Register& rt, const Word im) const;
 	void slti(const Register& rs,  Register& rt, const Word im) const;
 	void andi(const Register& rs,  Register& rt, const Word im) const;
@@ -79,9 +79,9 @@ public:
 	void multu(const Register& rs, const Register& rt, const Register& rd, const Word sh);
 	void div(const Register& rs, const Register& rt, const Register& rd, const Word sh);
 	void divu(const Register& rs, const Register& rt, const Register& rd, const Word sh);
-	void add(const Register& rs, const Register& rt, Register& rd, const Word sh) const;
+	virtual void add(const Register& rs, const Register& rt, Register& rd, Word sh);
 	void addu(const Register& rs, const Register& rt, Register& rd, const Word sh) const;
-	void sub(const Register& rs, const Register& rt, Register& rd, const Word sh) const;
+	virtual void sub(const Register& rs, const Register& rt, Register& rd, Word sh);
 	void subu(const Register& rs, const Register& rt, Register& rd, const Word sh) const;
 	void andd(const Register& rs, const Register& rt, Register& rd, const Word sh) const;
 	void orr(const Register& rs, const Register& rt, Register& rd, const Word sh) const;
