@@ -118,4 +118,14 @@ BOOST_AUTO_TEST_CASE( processor_test ) {
   r2 = 4 * sizeof(Word);
   proc.lw( r2, r1, 0);
   BOOST_CHECK( r1.read() == 4 );
+
+  // Branching
+  r1 = 10;
+  r2 = 10;
+  proc.j(0x500);
+  proc.beq(r1,r2,0x1000);
+  BOOST_CHECK( proc.getProgramCounter() == 0x1500);
+  r3 = 15;
+  proc.bne(r1,r3,0x500);
+  BOOST_CHECK( proc.getProgramCounter() == 0x1A00);
 }

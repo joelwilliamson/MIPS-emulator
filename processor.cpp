@@ -157,20 +157,17 @@ void Processor::jal(const Word address)
 	}
 
 void Processor::beq(const Register& rs, const Register& rt, const Word im)
-	{
-	if (rs.read() != rt.read()) return;
-	else programCounter += toSigned(im);
-	}
+{
+  if (rs.read() != rt.read()) return;
+  else programCounter += toSigned(im);
+}
 
 void Processor::bne(const Register& rs, const Register& rt, const Word im)
-	{
-	std::cerr << "bne " << rs.read() << "," << rt.read() << "," << toSigned(im) << std::endl;
-	if (rs.read() != rt.read())
-		{
-		programCounter += toSigned(im);
-		std::cerr << "Branched to " << programCounter << std::endl;
-		}
-	}
+{
+  if (rs.read() != rt.read()) {
+    programCounter += toSigned(im);
+  }
+}
 
 void Processor::addi(const Register& rs, Register& rt, Word im)
 	{
