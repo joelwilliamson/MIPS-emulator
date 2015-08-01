@@ -114,6 +114,7 @@ BOOST_AUTO_TEST_CASE( processor_test ) {
   proc.sw(r2,r1,0);
   proc.lw(r2,r3,0);
   BOOST_CHECK( r3.read() == 1234321 );
+  BOOST_CHECK( proc.getWord(r2.read()) == 1234321 );
   // Check that processor initialization worked correctly
   r2 = 4 * sizeof(Word);
   proc.lw( r2, r1, 0);
